@@ -1,0 +1,166 @@
+{
+    "id": "task-manager-backend-env-2025",
+    "name": "Task Manager Backend Environment",
+    "values": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000/api/v1",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "server_root",
+            "value": "http://localhost:3000",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "test_user_email",
+            "value": "testuser@example.com",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "test_user_fullname",
+            "value": "Test User",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "test_user_password",
+            "value": "TestPassword123!",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "mentor_email",
+            "value": "mentor@example.com",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "mentor_fullname",
+            "value": "Test Mentor",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "mentor_password",
+            "value": "MentorPass123!",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "coordinator_email",
+            "value": "coordinator@example.com",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "coordinator_fullname",
+            "value": "Test Coordinator",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "coordinator_password",
+            "value": "CoordinatorPass123!",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "intern_email",
+            "value": "intern@example.com",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "intern_fullname",
+            "value": "Test Intern",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "intern_password",
+            "value": "InternPass123!",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "auth_token",
+            "value": "",
+            "enabled": true,
+            "type": "secret"
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "mentor_id",
+            "value": "",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "coordinator_id",
+            "value": "",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "intern_id",
+            "value": "",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "group_id",
+            "value": "",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "task_id",
+            "value": "",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "test_group_id",
+            "value": "GRP001",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "test_project_title",
+            "value": "Task Manager Web Application",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "test_project_type",
+            "value": "webDevelopment",
+            "enabled": true,
+            "type": "default"
+        },
+        {
+            "key": "mongodb_uri",
+            "value": "mongodb://localhost:27017/task-manager",
+            "enabled": true,
+            "type": "secret"
+        },
+        {
+            "key": "jwt_secret",
+            "value": "your-jwt-secret-key",
+            "enabled": true,
+            "type": "secret"
+        }
+    ],
+    "timestamp": 1737811200000,
+    "_postman_variable_scope": "environment",
+    "_postman_exported_at": "2025-01-25T12:00:00.000Z",
+    "_postman_exported_using": "Postman/11.0.0"
+}

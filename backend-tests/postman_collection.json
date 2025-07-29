@@ -1,0 +1,1057 @@
+{
+  "info": {
+    "name": "Task Manager Backend API - Complete Test Suite",
+    "_postman_id": "task-manager-2025-api-tests",
+    "description": "Comprehensive Postman collection for testing Task Manager Backend APIs including User Management, Group Management, Task Management, and Progress Tracking",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "groupId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "taskId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "User Registration (Signup)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has success property', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('success');",
+                  "});",
+                  "",
+                  "pm.test('User created successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData).to.have.property('user');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["register"]
+            }
+          }
+        },
+        {
+          "name": "User Registration - Duplicate Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Error message for duplicate user', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "    pm.expect(jsonData.message).to.include('User already exists');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["register"]
+            }
+          }
+        },
+        {
+          "name": "User Login - Valid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Login successful', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData).to.have.property('token');",
+                  "});",
+                  "",
+                  "// Store token for future requests",
+                  "const responseJson = pm.response.json();",
+                  "if (responseJson.token) {",
+                  "    pm.collectionVariables.set('authToken', responseJson.token);",
+                  "}",
+                  "if (responseJson.user && responseJson.user._id) {",
+                  "    pm.collectionVariables.set('userId', responseJson.user._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "User Login - Invalid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Login failed with wrong password', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "    pm.expect(jsonData.message).to.include('Password is incorrect');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"WrongPassword\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getuser",
+              "host": ["{{baseUrl}}"],
+              "path": ["getuser"]
+            }
+          }
+        },
+        {
+          "name": "Add Role to User (Coordinator Required)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Role added successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.include('Role added successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"role\": \"Mentor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addRoles",
+              "host": ["{{baseUrl}}"],
+              "path": ["addRoles"]
+            }
+          }
+        },
+        {
+          "name": "Update User Details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('User updated successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.include('User Updated Successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"editingUser\": {\n    \"fullName\": \"John Updated Doe\",\n    \"email\": \"john.doe@example.com\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/manageUsers/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["manageUsers", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Group Management",
+      "item": [
+        {
+          "name": "Create New Group (Coordinator)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Group created successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.include('Group created successfully');",
+                  "});",
+                  "",
+                  "// Store group ID for future requests",
+                  "const responseJson = pm.response.json();",
+                  "if (responseJson.data && responseJson.data.groupId) {",
+                  "    pm.collectionVariables.set('groupId', responseJson.data.groupId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"GRP001\",\n  \"projectTitle\": \"Task Manager Web Application\",\n  \"projectType\": \"webDevelopment\",\n  \"groupMentor\": \"{{userId}}\",\n  \"groupMembers\": [\"{{userId}}\"],\n  \"token\": \"{{authToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addGroup",
+              "host": ["{{baseUrl}}"],
+              "path": ["addGroup"]
+            }
+          }
+        },
+        {
+          "name": "Create Group - Duplicate ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Duplicate group ID error', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "    pm.expect(jsonData.message).to.include('Group ID already exists');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"GRP001\",\n  \"projectTitle\": \"Another Project\",\n  \"projectType\": \"fullStack\",\n  \"groupMentor\": \"{{userId}}\",\n  \"groupMembers\": [\"{{userId}}\"],\n  \"token\": \"{{authToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addGroup",
+              "host": ["{{baseUrl}}"],
+              "path": ["addGroup"]
+            }
+          }
+        },
+        {
+          "name": "Get All Groups (Coordinator)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Groups fetched successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getGroups",
+              "host": ["{{baseUrl}}"],
+              "path": ["getGroups"]
+            }
+          }
+        },
+        {
+          "name": "Get Mentor Groups (Mentor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Mentor groups fetched successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getMentorGroups",
+              "host": ["{{baseUrl}}"],
+              "path": ["getMentorGroups"]
+            }
+          }
+        },
+        {
+          "name": "Get Mentor Group Details (Mentor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Group details fetched successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.include('Group details fetched successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getMentorGroupDetails",
+              "host": ["{{baseUrl}}"],
+              "path": ["getMentorGroupDetails"]
+            }
+          }
+        },
+        {
+          "name": "Update Group (Coordinator)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Group updated successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.include('Group updated successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{groupId}}\",\n  \"projectTitle\": \"Updated Task Manager Web Application\",\n  \"projectType\": \"fullStack\",\n  \"groupMentor\": \"{{userId}}\",\n  \"groupMembers\": [\"{{userId}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/updateGroup",
+              "host": ["{{baseUrl}}"],
+              "path": ["updateGroup"]
+            }
+          }
+        },
+        {
+          "name": "Delete Group (Coordinator)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Group deleted successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.include('Group deleted successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/deleteGroup/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["deleteGroup", "{{groupId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Task Management",
+      "item": [
+        {
+          "name": "Assign Task to Group (Mentor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Task assigned successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.include('Task assigned successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{groupId}}\",\n  \"groupMentor\": \"{{userId}}\",\n  \"groupMembers\": [\"{{userId}}\"],\n  \"tasks\": [\n    {\n      \"description\": \"Create user authentication system\",\n      \"is_completed\": false\n    },\n    {\n      \"description\": \"Implement database models\",\n      \"is_completed\": false\n    },\n    {\n      \"description\": \"Design frontend components\",\n      \"is_completed\": false\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assignTask",
+              "host": ["{{baseUrl}}"],
+              "path": ["assignTask"]
+            }
+          }
+        },
+        {
+          "name": "Get Tasks for User (Intern)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Tasks fetched successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "});",
+                  "",
+                  "// Store task ID for completion test",
+                  "const responseJson = pm.response.json();",
+                  "if (responseJson.data && responseJson.data.length > 0) {",
+                  "    pm.collectionVariables.set('taskId', responseJson.data[0]._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getTask",
+              "host": ["{{baseUrl}}"],
+              "path": ["getTask"]
+            }
+          }
+        },
+        {
+          "name": "Complete Task (Intern)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Task completed successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.include('Task completed successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskArrid\": \"{{taskId}}\",\n  \"tasksids\": [\"task-sub-id-1\", \"task-sub-id-2\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/complteTask",
+              "host": ["{{baseUrl}}"],
+              "path": ["complteTask"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Progress Tracking",
+      "item": [
+        {
+          "name": "Check Progress by Mentor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Progress data fetched successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "    pm.expect(jsonData.message).to.include('Progress data fetched successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": \"{{groupId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/checkProgress",
+              "host": ["{{baseUrl}}"],
+              "path": ["checkProgress"]
+            }
+          }
+        },
+        {
+          "name": "Check Progress (Alternative Endpoint)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/checkProgress",
+              "host": ["{{baseUrl}}"],
+              "path": ["checkProgress"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error Handling & Edge Cases",
+      "item": [
+        {
+          "name": "Access Protected Route Without Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Unauthorized access message', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "    pm.expect(jsonData.message).to.include('Token is missing');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getGroups",
+              "host": ["{{baseUrl}}"],
+              "path": ["getGroups"]
+            }
+          }
+        },
+        {
+          "name": "Access Coordinator Route as Non-Coordinator",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Role-based access denied', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "    pm.expect(jsonData.message).to.include('protected route for Coordinator only');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getGroups",
+              "host": ["{{baseUrl}}"],
+              "path": ["getGroups"]
+            }
+          }
+        },
+        {
+          "name": "Create Group with Missing Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 or 500', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);",
+                  "});",
+                  "",
+                  "pm.test('Error message for missing fields', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectTitle\": \"Incomplete Group Data\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/addGroup",
+              "host": ["{{baseUrl}}"],
+              "path": ["addGroup"]
+            }
+          }
+        },
+        {
+          "name": "Get Non-existent Group Details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Group not found message', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "    pm.expect(jsonData.message).to.include('not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/deleteGroup/NONEXISTENT",
+              "host": ["{{baseUrl}}"],
+              "path": ["deleteGroup", "NONEXISTENT"]
+            }
+          }
+        },
+        {
+          "name": "Invalid Token Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Invalid token message', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "    pm.expect(jsonData.message).to.include('token is invalid');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token_here"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/getMentorGroups",
+              "host": ["{{baseUrl}}"],
+              "path": ["getMentorGroups"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Server Health Check",
+      "item": [
+        {
+          "name": "Root Endpoint Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Server is running', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.sucess).to.be.true;",
+                  "    pm.expect(jsonData.message).to.include('server is running');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": [""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
